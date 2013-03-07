@@ -273,7 +273,7 @@ _start:
 	;
 	; =============================== EXIT(0) =====================================
 	;
-	; As long as 'man 2 exit' tells us
+	; As long as 'man 2 execve' tells us
 	; execve() does not return on success, and the text, data, bss, and stack of
 	; the calling process are overwritten by that of the program loaded.
 	; We can keep it *COMMENTED*.
