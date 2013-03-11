@@ -74,6 +74,7 @@ fi
 #
 # Check shellcode for NULLs
 #
+echo " [+] Checking shellcode for NULLs ..."
 if [[ $FULL_SHELLCODE == *00* ]]; then
   echo " [E] Your shellcode contains 00 (NULL) ! Most likely you need to change your port."
   exit 1
