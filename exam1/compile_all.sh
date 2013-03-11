@@ -33,6 +33,12 @@ if ! $(grep -qi ^global $ARG1.nasm 2>/dev/null); then
   exit 1;
 fi
 
+if [ -z "$ARG2" ]; then
+  echo " [I] Default port will be used."
+elif ! [[ $ARG2 -ge 1 && $ARG2 -le 65535 ]]; then
+  echo " [E] The port must be in range 1..65535 !"
+  exit 1;
+fi
 
 echo " [+] Assembling "$1".nasm with NASM ..."
 nasm -f elf32 -o $ARG1.o $ARG1.nasm && \
