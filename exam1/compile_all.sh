@@ -14,6 +14,9 @@ ARG1=$1        # Specify program
 ARG2=$2        # Specify port
 
 
+#
+# Check script usage and file existence
+#
 if [ -z "$ARG1" ]; then
   echo " [I] Please specify program you would like to assemble!"
   echo " [I] Usage example: ./compile_all.sh shell_bind_tcp 50123"
@@ -28,11 +31,17 @@ elif ! [ -e "$ARG1".nasm ]; then
   fi
 fi
 
+#
+# Validate nasm source file
+#
 if ! $(grep -qi ^global $ARG1.nasm 2>/dev/null); then
   echo " [E] The file "$ARG1.nasm" does not appear to be a correct NASM source!"
   exit 1;
 fi
 
+#
+# Port range check
+#
 if [ -z "$ARG2" ]; then
   echo " [I] Default port will be used."
 elif ! [[ $ARG2 -ge 1024 && $ARG2 -le 65535 ]]; then
@@ -42,6 +51,9 @@ else
   echo " [I] Using custom port: "$ARG2
 fi
 
+#
+# Assemble and link
+#
 echo " [+] Assembling "$1".nasm with NASM ..."
 nasm -f elf32 -o $ARG1.o $ARG1.nasm && \
 echo " [+] Linking "$1".o ..." && \
@@ -49,6 +61,9 @@ ld -m elf_i386 -o $ARG1 $ARG1.o && \
 echo -e " [+] Generating shellcode with objdump ..." && \
 SHELLCODE=$(objdump -d ./$ARG1 |grep '[0-9a-f]:'|grep -v 'file'|cut -f2 -d:|cut -f1-7 -d' '|tr -s ' '|tr '\t' ' '|sed 's/ $//g'|sed 's/ /\\x/g'|paste -d '' -s |sed 's/^/"/' |sed 's/$/"/g')
 
+#
+# Set the custom port (if any was specified) for the shellcode
+#
 if [ -z "$ARG2" ]; then
   FULL_SHELLCODE=$(echo $SHELLCODE)
 else
@@ -56,6 +71,9 @@ else
   FULL_SHELLCODE=$(echo -n $SHELLCODE | sed 's/.........$//' ; echo $PORT_HEX"\"")
 fi
 
+#
+# Check shellcode for NULLs
+#
 if [[ $FULL_SHELLCODE == *00* ]]; then
   echo " [E] Your shellcode contains 00 (NULL) ! Most likely you need to change your port."
   exit 1
@@ -65,6 +83,9 @@ echo -ne " [+] Shellcode size is "$(echo -ne $FULL_SHELLCODE|sed 's/\"//g'|wc -c
 echo $FULL_SHELLCODE
 
 
+#
+# Generate shellcode.c
+#
 echo " [+] Generating shellcode.c file with the "$ARG1" shellcode ..."
 cat > shellcode.c << EOF
 #include <stdio.h>
@@ -81,6 +102,9 @@ main()
 }
 EOF
 
+#
+# Compile C code with GCC
+#
 echo " [+] Compiling shellcode.c with GCC ..."
 gcc -m32 -fno-stack-protector -z execstack shellcode.c -o shellcode
 
