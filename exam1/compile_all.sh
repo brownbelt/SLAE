@@ -16,7 +16,7 @@ ARG2=$2        # Specify port
 
 if [ -z "$ARG1" ]; then
   echo " [I] Please specify program you would like to assemble!"
-  echo " [I] Example: ./compile_all.sh shell_bin_tcp 50123"
+  echo " [I] Usage example: ./compile_all.sh shell_bind_tcp 50123"
   exit 1;
 elif ! [ -e "$ARG1".nasm ]; then
   ARG1_GUESS=$(echo $ARG1 |sed 's/.nasm//g')
