@@ -35,9 +35,11 @@ fi
 
 if [ -z "$ARG2" ]; then
   echo " [I] Default port will be used."
-elif ! [[ $ARG2 -ge 1 && $ARG2 -le 65535 ]]; then
-  echo " [E] The port must be in range 1..65535 !"
+elif ! [[ $ARG2 -ge 1024 && $ARG2 -le 65535 ]]; then
+  echo " [E] The port must be in range 1024..65535 !"
   exit 1;
+else
+  echo " [I] Using custom port: "$ARG2
 fi
 
 echo " [+] Assembling "$1".nasm with NASM ..."
@@ -52,6 +54,11 @@ if [ -z "$ARG2" ]; then
 else
   PORT_HEX=$(printf '%.4x' $ARG2 | sed 's/../\\x&/g')
   FULL_SHELLCODE=$(echo -n $SHELLCODE | sed 's/.........$//' ; echo $PORT_HEX"\"")
+fi
+
+if [[ $FULL_SHELLCODE == *00* ]]; then
+  echo " [E] Your shellcode contains 00 (NULL) ! Most likely you need to change your port."
+  exit 1
 fi
 
 echo -ne " [+] Shellcode size is "$(echo -ne $FULL_SHELLCODE|sed 's/\"//g'|wc -c)" bytes\n"
