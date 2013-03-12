@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 #
-# Create shellcode with specific port
+# Creates shell_bind_tcp shellcode with specific port
 #
 # Example
 # ./compile_all.sh shell_bind_tcp 50123
@@ -14,6 +14,7 @@ ARG1=$1        # Specify program
 ARG2=$2        # Specify port
 
 
+
 #
 # Check script usage and file existence
 #
@@ -21,15 +22,21 @@ if [ -z "$ARG1" ]; then
   echo " [I] Please specify program you would like to assemble!"
   echo " [I] Usage example: ./compile_all.sh shell_bind_tcp 50123"
   exit 1;
-elif ! [ -e "$ARG1".nasm ]; then
+elif [ -e "$ARG1" ]; then
+  if [[ $ARG1 == *nasm* ]]; then
+      ARG1=$(echo -ne $ARG1 |sed 's/.....$//g');
+     echo $ARG1
+  fi
+elif [ ! -e "$ARG1".nasm ]; then
   ARG1_GUESS=$(echo $ARG1 |sed 's/.nasm//g')
   if [ -e "$ARG1_GUESS" ]; then
     ARG1=$ARG1_GUESS
   else
-    echo " [E] File "$ARG1".nasm does not exist!"
+    echo " [E] File "$ARG1" does not exist!"
     exit 1;
   fi
 fi
+
 
 #
 # Validate nasm source file
@@ -54,9 +61,9 @@ fi
 #
 # Assemble and link
 #
-echo " [+] Assembling "$1".nasm with NASM ..."
+echo " [+] Assembling "$ARG1".nasm with NASM ..."
 nasm -f elf32 -o $ARG1.o $ARG1.nasm && \
-echo " [+] Linking "$1".o ..." && \
+echo " [+] Linking "$ARG1".o ..." && \
 ld -m elf_i386 -o $ARG1 $ARG1.o && \
 echo -e " [+] Generating shellcode with objdump ..." && \
 SHELLCODE=$(objdump -d ./$ARG1 |grep '[0-9a-f]:'|grep -v 'file'|cut -f2 -d:|cut -f1-7 -d' '|tr -s ' '|tr '\t' ' '|sed 's/ $//g'|sed 's/ /\\x/g'|paste -d '' -s |sed 's/^/"/' |sed 's/$/"/g')

@@ -16,8 +16,8 @@
 ; 2013 March
 ;
 ; DESC:
-; Binds to a port 43775
-; Execs Shell on incoming connection
+; - Binds to a port 43775
+; - Execs Shell on incoming connection
 ;
 ;
 ; Shellcode size: 108 bytes
