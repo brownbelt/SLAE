@@ -90,6 +90,9 @@ fi
 echo -ne " [+] Shellcode size is "$(echo -ne $FULL_SHELLCODE|sed 's/\"//g'|wc -c)" bytes\n"
 echo $FULL_SHELLCODE
 
+if [ -z "$FULL_SHELLCODE" ]; then
+  exit 1;
+fi
 
 #
 # Generate shellcode.c
