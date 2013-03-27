@@ -1,0 +1,33 @@
+USAGE
+
+1. Prepare your payload in payload.nasm file or you can directly specify it in make.sh script (PAYLOADCODE= variable)
+
+I'm using a symlink as follows
+
+exam3$ ln -svf payload-execve-stack.nasm payload.nasm
+`payload.nasm' -> `payload-execve-stack.nasm'
+
+2. Compile the shellcode with a custom "egg" (must be 8 bytes in length)
+
+exam3$ ./make.sh "cust.egg"
+ [I] Using custom EGG mark: cust.egg
+ [+] Compiling payload.nasm ...
+ [+] Compiling egg.nasm ...
+ [+] Compiling hunter.nasm ...
+ [+] Extracting EGG code from egg ...
+ [+] Extracting PAYLOAD code from payload ...
+ [+] Checking PAYLOAD code for NULLs ...
+ [+] Extracting HUNTER code from hunter ...
+ [+] Checking HUNTER code for NULLs ...
+ [+] Compiling shellcode.c ...
+-rwx------. 1 arno arno 5108 Mar 27 15:00 ./shellcode
+ [+] All done!
+
+
+3. Run the shellcode
+
+exam3$ ./shellcode 
+Hunter Length:  37
+Payload Length:  43
+sh-4.1$ 
+
