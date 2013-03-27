@@ -10,8 +10,8 @@ exam3$ ln -svf payload-execve-stack.nasm payload.nasm
 
 2. Compile the shellcode with a custom "egg" (must be 8 bytes in length)
 
-exam3$ ./make.sh "egg.mark"
- [I] Using custom EGG mark: egg.mark
+exam3$ ./make.sh "egg.MaRk"
+ [I] Using custom EGG mark: egg.MaRk
  [+] Compiling payload.nasm ...
  [+] Compiling hunter.nasm ...
  [+] Extracting PAYLOAD code from payload ...
@@ -20,14 +20,13 @@ exam3$ ./make.sh "egg.mark"
  [+] Extracting HUNTER code from hunter ...
  [+] Checking HUNTER code for NULLs ...
  [+] Compiling shellcode.c ...
--rwx------. 1 arno arno 5100 Mar 27 16:47 ./shellcode
+-rwx------. 1 arno arno 5100 Mar 27 17:02 ./shellcode
  [+] All done!
 
 
 3. Run the shellcode
 
 exam3$ ./shellcode 
-Hunter Length:  29
+Hunter Length:  21
 Payload Length:  36
-sh-4.1$ exit
-
+sh-4.1$ 

