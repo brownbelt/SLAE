@@ -7,10 +7,11 @@ I'm using a symlink as follows
 exam3$ ln -svf payload-execve-stack.nasm payload.nasm
 `payload.nasm' -> `payload-execve-stack.nasm'
 
+
 2. Compile the shellcode with a custom "egg" (must be 8 bytes in length)
 
-exam3$ ./make.sh 
- [I] Argument not specified. Using default EGG mark.
+exam3$ ./make.sh "egg.mark"
+ [I] Using custom EGG mark: egg.mark
  [+] Compiling payload.nasm ...
  [+] Compiling hunter.nasm ...
  [+] Extracting PAYLOAD code from payload ...
@@ -19,8 +20,9 @@ exam3$ ./make.sh
  [+] Extracting HUNTER code from hunter ...
  [+] Checking HUNTER code for NULLs ...
  [+] Compiling shellcode.c ...
--rwx------. 1 arno arno 5100 Mar 27 16:46 ./shellcode
+-rwx------. 1 arno arno 5100 Mar 27 16:47 ./shellcode
  [+] All done!
+
 
 3. Run the shellcode
 
