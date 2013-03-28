@@ -1,0 +1,27 @@
+USAGE
+
+1. Prepare your payload in payload.nasm file or you can directly specify it in make.sh script (PAYLOADCODE= variable)
+
+
+2. Compile the shellcode with a custom "egg" (must be 8 bytes in length)
+
+access-noloop$ ./make.sh "HereItIs"
+ [I] Using custom EGG mark: HereItIs
+ [+] Compiling payload.nasm ...
+ [+] Compiling hunter.nasm ...
+ [+] Extracting PAYLOAD code from payload ...
+ [+] Adding EGG mark to PAYLOAD ...
+ [+] Checking PAYLOAD code for NULLs ...
+ [+] Extracting HUNTER code from hunter ...
+ [+] Checking HUNTER code for NULLs ...
+ [+] Compiling shellcode.c ...
+-rwx------. 1 arno arno 5260 Mar 28 13:01 ./shellcode
+ [+] All done!
+
+3. Run the shellcode
+
+access-noloop$ ./shellcode 
+Hunter Length:  66
+Payload Length:  36
+sh-4.1$ 
+
