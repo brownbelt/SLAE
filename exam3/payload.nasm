@@ -1,1 +1,0 @@
-payload-execve-stack.nasm
