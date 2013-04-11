@@ -64,4 +64,4 @@ _runshellcode:
 	call edx
 
 _down:
-	call _up		; ESP now has and address that points to the next instruction, however we are going UP
+	call _up		; ESP now has an address that points to the next instruction, however we are going UP
