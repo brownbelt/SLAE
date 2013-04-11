@@ -28,7 +28,9 @@ echo " [+] Encoding the payload shellcode ..."
 #
 
 garbage=('\x37' '\xFA' '\xD6' '\x3F');
-ENCPSHELLCODE=$(for i in $(objdump -d $SPAYLOAD |grep "^ " |cut -f2); do echo -n '\x'$i;  echo -n ${garbage[$[$(shuf --random-source=/dev/urandom -z -i 999-999999 -n1)%4]]}; done; echo -n "\xAF\"")
+#ENCPSHELLCODE=$(for i in $(objdump -d $SPAYLOAD |grep "^ " |cut -f2); do echo -n '\x'$i;  echo -n ${garbage[$[$(shuf --random-source=/dev/urandom -z -i 999-999999 -n1)%4]]}; done; echo -n "\xAF\"")
+ENCPSHELLCODE=$(for i in $(objdump -d $SPAYLOAD |grep "^ " |cut -f2); do echo -n '\x'$i;  echo -n ${garbage[$[$(od -A n -N 2 -t u2 /dev/urandom)%4]]}; done; echo -n "\xAF\"")
+
 
 FULL_SHELLCODE=${DECODERSHELLCODE}${ENCPSHELLCODE}
 
