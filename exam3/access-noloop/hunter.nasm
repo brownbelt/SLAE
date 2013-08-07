@@ -13,7 +13,7 @@
 ;
 ;
 ; Filename: hunter.nasm *access +noloop modification
-; Author: Andrey Arapov <andrey.arapov@gmail.com>
+; Author: Andrey Arapov <arno@nixaid.com>
 ; 2013 March
 ;
 ;

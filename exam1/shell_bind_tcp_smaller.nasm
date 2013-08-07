@@ -13,7 +13,7 @@
 ;
 ;
 ; Filename: shell_bind_tcp_smaller.nasm
-; Author: Andrey Arapov <andrey.arapov@gmail.com>
+; Author: Andrey Arapov <arno@nixaid.com>
 ; 2013 March
 ;
 ; DESC:

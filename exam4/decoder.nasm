@@ -13,7 +13,7 @@
 ;
 ;
 ; Filename: decoder.nasm
-; Author: Andrey Arapov <andrey.arapov@gmail.com>
+; Author: Andrey Arapov <arno@nixaid.com>
 ; 2013 April
 ;
 ;
